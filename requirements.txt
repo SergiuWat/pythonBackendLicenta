@@ -1,4 +1,4 @@
-opensearch
+opensearch-py
 fastapi
 pydantic
 uvicorn
