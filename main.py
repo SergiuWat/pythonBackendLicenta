@@ -45,7 +45,7 @@ class SensorData(BaseModel):
 @app.get("/get-all-data/")
 async def get_all_data():
     try:
-        search_response = opensearch_client.search(index=opensearch_index, body={"query": {"match_all": {}}})
+        search_response = opensearch_client.search(index=opensearch_index, body={"size": 100, "query": {"match_all": {}}})
         documents = search_response["hits"]["hits"]
 
         # Extract sensor data fields from each document
