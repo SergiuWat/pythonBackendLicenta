@@ -59,7 +59,9 @@ async def get_all_data():
                 "gas": source["gas"],
                 "altitude": source["altitude"],
                 "latitude": source["latitude"],
-                "longitude": source["longitude"]
+                "longitude": source["longitude"],
+                "date": source["date"]
+
             })
     except Exception as e:
         print("An error occurred while retrieving documents:", str(e))
