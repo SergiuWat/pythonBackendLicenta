@@ -4,6 +4,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from datetime import datetime
+import pytz
+
 
 app = FastAPI()
 
@@ -81,7 +83,8 @@ async def delete_all_data():
 async def create_sensor_data(sensor_data: SensorData):
     # Create a unique ID for the document
     document_id = str(uuid4())
-    current_datatime = datetime.now()
+    timezone = pytz.timezone('Europe/Bucharest')
+    current_datatime = datetime.now(timezone)
     formatted_date = current_datatime.strftime("%d/%m/%Y %H:%M")
     sensor_data.date = formatted_date
     # Initialize OpenSearch client

@@ -2,3 +2,4 @@ opensearch-py
 fastapi
 pydantic
 uvicorn
+pytz
