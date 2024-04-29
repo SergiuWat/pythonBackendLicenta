@@ -41,6 +41,7 @@ class SensorData(BaseModel):
     altitude: float
     latitude: float
     longitude: float
+    iaq: float
     date: str
 
 
@@ -62,6 +63,7 @@ async def get_all_data():
                 "altitude": source["altitude"],
                 "latitude": source["latitude"],
                 "longitude": source["longitude"],
+                "iaq": source["iaq"],
                 "date": source["date"]
 
             })
