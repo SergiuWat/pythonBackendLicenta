@@ -41,8 +41,8 @@ class SensorData(BaseModel):
     altitude: float
     latitude: float
     longitude: float
-    iaq: float
     date: str
+    timestamp: str
 
 
 @app.get("/get-all-data/")
@@ -63,7 +63,6 @@ async def get_all_data():
                 "altitude": source["altitude"],
                 "latitude": source["latitude"],
                 "longitude": source["longitude"],
-                "iaq": source["iaq"],
                 "date": source["date"]
 
             })
@@ -86,9 +85,11 @@ async def create_sensor_data(sensor_data: SensorData):
     # Create a unique ID for the document
     document_id = str(uuid4())
     timezone = pytz.timezone('Europe/Bucharest')
+    dt = timezone.localize(datetime.today())
     current_datatime = datetime.now(timezone)
     formatted_date = current_datatime.strftime("%d/%m/%Y %H:%M")
     sensor_data.date = formatted_date
+    sensor_data.timestamp = dt
     # Initialize OpenSearch client
     opensearch_client = OpenSearch(
         hosts=[elasticURL],
