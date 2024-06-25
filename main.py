@@ -3,7 +3,7 @@ from opensearchpy import OpenSearch
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytz
 
 
@@ -11,7 +11,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Adjust this to your Angular application's URL
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["GET", "POST", "DELETE"],
     allow_headers=["*"],
@@ -108,3 +108,30 @@ async def create_sensor_data(sensor_data: SensorData):
         id=document_id
     )
     return {"message": "Sensor data indexed successfully", "document_id": document_id}
+
+@app.delete("/delete-old-data/")
+async def delete_old_data():
+    try:
+        # Calculate the date 30 days ago
+        timezone = pytz.timezone('Europe/Bucharest')
+        now = datetime.now(timezone)
+        thirty_days_ago = now - timedelta(days=30)
+        thirty_days_ago_iso = thirty_days_ago.isoformat()
+
+        # Perform the delete_by_query with a range filter
+        delete_query = {
+            "query": {
+                "range": {
+                    "timestamp": {
+                        "lt": thirty_days_ago_iso
+                    }
+                }
+            }
+        }
+        delete_response = opensearch_client.delete_by_query(index=opensearch_index, body=delete_query)
+        print("Documents older than 30 days deleted from index:", opensearch_index)
+    except Exception as e:
+        print("An error occurred while deleting documents:", str(e))
+        return {"error": str(e)}
+
+    return {"message": "Old data deleted successfully from index: " + opensearch_index}
